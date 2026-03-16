@@ -1,0 +1,51 @@
+{
+  "name": "confusion-scan",
+  "version": "1.0.0",
+  "description": "Scan a project for confusing code patterns.",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "bin": {
+    "confusion-scan": "./bin/confusion-scan.js"
+  },
+  "files": [
+    "bin",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node bin/confusion-scan.js ./test-fixture"
+  },
+  "keywords": [
+    "cli",
+    "code-quality",
+    "linter",
+    "static-analysis",
+    "complexity",
+    "dead-code",
+    "code-smell",
+    "code-review",
+    "eslint",
+    "javascript",
+    "typescript",
+    "developer-tools"
+  ],
+  "author": "0x2a4",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/0x2a4/confusion-scan.git"
+  },
+  "homepage": "https://github.com/0x2a4/confusion-scan#readme",
+  "bugs": {
+    "url": "https://github.com/0x2a4/confusion-scan/issues"
+  },
+  "dependencies": {
+    "@babel/parser": "^7.23.0",
+    "@babel/traverse": "^7.23.0",
+    "chalk": "^4.1.2"
+  }
+}
