@@ -186,7 +186,8 @@ async function main() {
     process.exit(1);
   }
 
-  const { files, issues, score } = result;
+  const { files, issues, score, failOn } = result;
+  const blocked = failOn.length > 0 && issues.some(i => failOn.includes(i.type));
 
   if (opts.json) {
     const output = {
@@ -194,6 +195,7 @@ async function main() {
       scanned: files,
       total: issues.length,
       score,
+      blocked,
       issues: issues.map(issue => ({
         type: issue.type,
         file: issue.file || null,
@@ -203,7 +205,7 @@ async function main() {
       })),
     };
     process.stdout.write(JSON.stringify(output, null, 2) + '\n');
-    process.exit(issues.length > 0 ? 1 : 0);
+    process.exit(blocked ? 1 : 0);
   }
 
   if (issues.length === 0) {
@@ -221,7 +223,13 @@ async function main() {
   }
 
   printSummary(issues, files, score);
-  process.exit(1);
+
+  if (blocked) {
+    process.stdout.write(chalk.red(`\n✖ Scan failed — blocked issue types found: ${failOn.join(', ')}\n\n`));
+    process.exit(1);
+  }
+
+  process.exit(issues.length > 0 ? 1 : 0);
 }
 
 main();

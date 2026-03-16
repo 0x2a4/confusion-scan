@@ -6,6 +6,7 @@ const DEFAULTS = {
   maxFunctionLines: 60,
   maxComplexity: 10,
   ignore: [],
+  failOn: [],
 };
 
 function loadConfig(rootDir) {
@@ -21,10 +22,11 @@ function loadConfig(rootDir) {
   }
 
   return {
-    maxFileLines:      userConfig.maxFileLines      ?? DEFAULTS.maxFileLines,
-    maxFunctionLines:  userConfig.maxFunctionLines  ?? DEFAULTS.maxFunctionLines,
-    maxComplexity:     userConfig.maxComplexity     ?? DEFAULTS.maxComplexity,
-    ignore:            userConfig.ignore             ?? DEFAULTS.ignore,
+    maxFileLines:     userConfig.maxFileLines     ?? DEFAULTS.maxFileLines,
+    maxFunctionLines: userConfig.maxFunctionLines ?? DEFAULTS.maxFunctionLines,
+    maxComplexity:    userConfig.maxComplexity    ?? DEFAULTS.maxComplexity,
+    ignore:           userConfig.ignore           ?? DEFAULTS.ignore,
+    failOn:           userConfig.failOn           ?? DEFAULTS.failOn,
   };
 }
 

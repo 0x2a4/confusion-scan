@@ -66,7 +66,12 @@ async function scan(targetDir, { ignore = [] } = {}) {
   const deadFileIssues = deadFiles.findDeadFiles(files, importedFiles, absTarget);
   allIssues.push(...deadFileIssues);
 
-  return { files: files.length, issues: allIssues, score: computeScore(allIssues) };
+  return {
+    files: files.length,
+    issues: allIssues,
+    score: computeScore(allIssues),
+    failOn: config.failOn,
+  };
 }
 
 module.exports = { scan };
