@@ -1,8 +1,9 @@
 const traverse = require('@babel/traverse').default;
+const { DEFAULTS } = require('../utils/loadConfig');
 
-const FILE_LINE_THRESHOLD = 300;
-const FUNCTION_LINE_THRESHOLD = 60;
-const FUNCTION_COMPLEXITY_THRESHOLD = 10;
+const FILE_LINE_THRESHOLD = DEFAULTS.maxFileLines;
+const FUNCTION_LINE_THRESHOLD = DEFAULTS.maxFunctionLines;
+const FUNCTION_COMPLEXITY_THRESHOLD = DEFAULTS.maxComplexity;
 
 function countComplexity(node) {
   let count = 1;
@@ -48,10 +49,13 @@ function getFunctionName(path) {
   return null;
 }
 
-function analyze(ast, filePath, lineCount) {
+function analyze(ast, filePath, lineCount, config = {}) {
   const issues = [];
+  const fileThreshold     = config.maxFileLines     ?? FILE_LINE_THRESHOLD;
+  const functionThreshold = config.maxFunctionLines ?? FUNCTION_LINE_THRESHOLD;
+  const complexityThreshold = config.maxComplexity  ?? FUNCTION_COMPLEXITY_THRESHOLD;
 
-  if (lineCount > FILE_LINE_THRESHOLD) {
+  if (lineCount > fileThreshold) {
     issues.push({
       type: 'large-file',
       file: filePath,
@@ -72,7 +76,7 @@ function analyze(ast, filePath, lineCount) {
       const lineCount = end - start;
       const complexity = countComplexity(node);
 
-      if (lineCount > FUNCTION_LINE_THRESHOLD) {
+      if (lineCount > functionThreshold) {
         issues.push({
           type: 'large-function',
           file: filePath,
@@ -80,7 +84,7 @@ function analyze(ast, filePath, lineCount) {
           message: `\`${name}()\` is ${lineCount} lines long`,
         });
       }
-      if (complexity >= FUNCTION_COMPLEXITY_THRESHOLD) {
+      if (complexity >= complexityThreshold) {
         issues.push({
           type: 'complex-function',
           file: filePath,

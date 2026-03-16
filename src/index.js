@@ -1,6 +1,7 @@
 const path = require('path');
 const { walkDir, readFile } = require('./utils/fileScanner');
 const { parseFile } = require('./utils/astParser');
+const { loadConfig } = require('./utils/loadConfig');
 const misleadingNames = require('./analyzers/misleadingNames');
 const namingConsistency = require('./analyzers/namingConsistency');
 const duplicateLogic = require('./analyzers/duplicateLogic');
@@ -24,7 +25,9 @@ function computeScore(issues) {
 
 async function scan(targetDir, { ignore = [] } = {}) {
   const absTarget = path.resolve(targetDir);
-  const files = walkDir(absTarget, { ignore });
+  const config = loadConfig(absTarget);
+  const mergedIgnore = [...new Set([...ignore, ...config.ignore])];
+  const files = walkDir(absTarget, { ignore: mergedIgnore });
 
   if (files.length === 0) {
     return { files: 0, issues: [], score: 100 };
@@ -50,7 +53,7 @@ async function scan(targetDir, { ignore = [] } = {}) {
     const fileIssues = [
       ...misleadingNames.analyze(ast, relFile),
       ...namingConsistency.analyze(ast, relFile),
-      ...fileSizeAnalyzer.analyze(ast, relFile, lineCount),
+      ...fileSizeAnalyzer.analyze(ast, relFile, lineCount, config),
     ];
     allIssues.push(...fileIssues);
 
